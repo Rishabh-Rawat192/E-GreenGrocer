@@ -1,0 +1,56 @@
+<resources>
+    <string name="app_name">E-GreenGrocer</string>
+
+    <string name="signUp_new_users">signUp(new users)</string>
+    <string name="login_old_users">login(old users)</string>
+    <string name="enter_pin_only_for_admin">Enter Pin(Only for admin)</string>
+    <string name="enter_your_password">Enter Password</string>
+    <string name="enter_your_email_please">Enter Email</string>
+    <string name="forget_password">forgot password?</string>
+    <string name="login_image">this is home page image</string>
+    <string name="enter_item_name">Enter item name</string>
+    <string name="enter_item_price">Enter item price</string>
+    <string name="submit">Submit</string>
+    <string name="submit_change">Submit change</string>
+    <string name="enter_estimated_delivery_data_and_time">enter estimated delivery data and time</string>
+    <string name="delivered">delivered</string>
+    <string name="go_to_cart">go to cart</string>
+    <string name="order">order</string>
+    <string name="enter_old_pin">enter old pin</string>
+    <string name="enter_new_pin">enter new pin</string>
+    <string name="confirm">confirm</string>
+    <string name="enter_estimate_delivery_date_and_time">enter estimate delivery date and time</string>
+    <string name="select_it">select it</string>
+    <string name="add_new">add new</string>
+    <string name="rs">Rs:</string>
+    <string name="_0">0</string>
+    <string name="remove">-</string>
+    <string name="add">+</string>
+    <string name="house_number">house number</string>
+    <string name="colony_street">colony/street</string>
+    <string name="locality">locality</string>
+    <string name="mobile_number">Mobile number</string>
+    <string name="please_enter_estimate_delivery_date_and_time">please enter estimate delivery date and time</string>
+    <string name="cancel">Cancel</string>
+    <string name="delivery_price">change delivery price</string>
+    <string name="add_item">Add Item</string>
+    <string name="orders">orders</string>
+    <string name="change_admin_pin">change admin pin</string>
+    <string name="logout">logout</string>
+    <string name="your_orders">Your Orders</string>
+    <string name="admin">admin</string>
+    <string name="enter_min_order_price">Enter min order price</string>
+    <string name="enter_delivery_price">enter delivery price</string>
+
+    <string-array name="units">
+        <item>out of stock</item>
+        <item>1 kg</item>
+        <item>50 gram</item>
+        <item>100 gram</item>
+        <item>250 gram</item>
+        <item>500 gram</item>
+        <item>12 piece</item>
+        <item>1 piece</item>
+        <item>6 piece</item>
+    </string-array>
+</resources>
