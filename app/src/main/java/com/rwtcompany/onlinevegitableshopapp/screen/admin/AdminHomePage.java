@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,18 +20,23 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
+import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.database.paging.DatabasePagingOptions;
+import com.firebase.ui.database.paging.FirebaseRecyclerPagingAdapter;
+import com.firebase.ui.database.paging.LoadingState;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.rwtcompany.onlinevegitableshopapp.R;
 import com.rwtcompany.onlinevegitableshopapp.databinding.ActivityAdminHomePageBinding;
@@ -155,13 +161,22 @@ public class AdminHomePage extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
         dialog.show();
-        FirebaseRecyclerOptions<AdminItems> options =
-                new FirebaseRecyclerOptions.Builder<AdminItems>()
-                        .setQuery(databaseReference, AdminItems.class)
-                        .setLifecycleOwner(this)
-                        .build();
-        FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<AdminItems, AdminPageViewHolder>(options)
+        Query baseQuery=databaseReference;
+
+        PagedList.Config config = new PagedList.Config.Builder()
+                .setEnablePlaceholders(false)
+                .setPrefetchDistance(10)
+                .setPageSize(20)
+                .build();
+
+        DatabasePagingOptions<AdminItems> options = new DatabasePagingOptions.Builder<AdminItems>()
+                .setLifecycleOwner(this)
+                .setQuery(baseQuery, config, AdminItems.class)
+                .build();
+
+        FirebaseRecyclerPagingAdapter<AdminItems,AdminPageViewHolder> adapter = new FirebaseRecyclerPagingAdapter<AdminItems, AdminPageViewHolder>(options)
         {
 
             @NonNull
@@ -197,6 +212,24 @@ public class AdminHomePage extends AppCompatActivity {
                         return true;
                     }
                 });
+            }
+
+            @Override
+            protected void onLoadingStateChanged(@NonNull LoadingState state) {
+                switch (state) {
+                    case LOADING_INITIAL:
+//                        Log.i("Loading state","initial");
+//                        break;
+                    case LOADING_MORE:
+//                        Log.i("Loading state","more");
+//                        break;
+                    case LOADED:
+//                        Log.i("Loading state","loaded");
+//                        break;
+                    case ERROR:
+//                        Toast.makeText(AdminHomePage.this,"OOPS... Something Went Wrong!..",Toast.LENGTH_LONG).show();
+//                        break;
+                }
             }
         };
 
