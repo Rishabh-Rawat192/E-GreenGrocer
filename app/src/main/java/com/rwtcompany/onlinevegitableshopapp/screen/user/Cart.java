@@ -503,7 +503,7 @@ public class Cart extends AppCompatActivity {
                 number = etMobileNumber.getText().toString().trim();
                 name = etUserName.getText().toString().trim();
                 String requestTime = etRequestTime.getText().toString().trim();
-                if (address.isEmpty() || number.isEmpty() || requestTime.isEmpty() || name.isEmpty() || requestTime.isEmpty())
+                if (address.isEmpty() || number.isEmpty() || requestTime.isEmpty() || name.isEmpty())
                     Toast.makeText(Cart.this, "enter name,address,mobile number and delivery date and time please", Toast.LENGTH_LONG).show();
                 else {
                     userReference.child("address").setValue(address);
