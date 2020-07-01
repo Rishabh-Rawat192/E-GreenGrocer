@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,15 +22,17 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.rwtcompany.onlinevegitableshopapp.R;
 import com.rwtcompany.onlinevegitableshopapp.databinding.ActivityMainBinding;
 import com.rwtcompany.onlinevegitableshopapp.screen.admin.AdminHomePage;
 import com.rwtcompany.onlinevegitableshopapp.screen.user.UserHomePage;
 
 public class MainActivity extends AppCompatActivity {
-    ActivityMainBinding binding;
+    private ActivityMainBinding binding;
 
-    String adminPin,email,password;
+    private String adminPin,email,password;
 
     private String getAdminPin;
     private FirebaseAuth mAuth;
@@ -106,7 +109,8 @@ public class MainActivity extends AppCompatActivity {
             signIn();
         }
     }
-    public void signIn()
+
+    private void signIn()
     {   dialog.show();
         mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -129,7 +133,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-    public void adminTest()
+
+    private void adminTest()
     {
         dialog.show();
         database.getReference("admin/pin").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -138,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 getAdminPin =dataSnapshot.getValue().toString();
                 if (getAdminPin.equals(adminPin)) {
                     database.getReference("admin").child("user").setValue(currentUser.getEmail());
+                    saveTokenForFCM();
                     startActivity(new Intent(MainActivity.this,AdminHomePage.class));
                     finish();
                 }
@@ -219,8 +225,24 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
-    public void addToUsers()
+
+    private void addToUsers()
     {
         database.getReference().child("users").child(currentUser.getUid()).child("email").setValue(currentUser.getEmail());
+    }
+
+    private void saveTokenForFCM(){
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.i("Main", "Error in saving token");
+                            return;
+                        }
+                        String token = task.getResult().getToken();
+                        database.getReference().child("admin").child("token").setValue(token);
+                    }
+                });
     }
 }
