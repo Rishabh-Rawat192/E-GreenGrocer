@@ -62,6 +62,10 @@ public class UserHomePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityUserHomePageBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        binding.userHomeRecyclerView.setHasFixedSize(true);
+        binding.userHomeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         mAuth=FirebaseAuth.getInstance();
         dialog = new ProgressDialog(this);
         dialog.setMessage("getting data...");
@@ -84,6 +88,22 @@ public class UserHomePage extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 quantities =new int[(int)dataSnapshot.getChildrenCount()];
                 costs = new int[(int) dataSnapshot.getChildrenCount()];
+
+                FirebaseDatabase.getInstance().getReference().child("admin").child("minOrderPrice").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        dialog.dismiss();
+                        minOrderPrice = Integer.parseInt(dataSnapshot.getValue().toString());
+                        //Setting recyclerVew as now quantities,costs and minOrderPrice available
+                        setUpRecyclerView();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        dialog.dismiss();
+                        Toast.makeText(UserHomePage.this,databaseError.getMessage(),Toast.LENGTH_LONG).show();
+                    }
+                });
             }
 
             @Override
@@ -92,33 +112,21 @@ public class UserHomePage extends AppCompatActivity {
             }
         });
 
-        FirebaseDatabase.getInstance().getReference().child("admin").child("minOrderPrice").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                dialog.dismiss();
-                minOrderPrice = Integer.parseInt(dataSnapshot.getValue().toString());
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                dialog.dismiss();
-                Toast.makeText(UserHomePage.this,databaseError.getMessage(),Toast.LENGTH_LONG).show();
-            }
-        });
-
-        binding.userHomeRecyclerView.setHasFixedSize(true);
-        binding.userHomeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        dialog.show();
         if(addedOnCart.isEmpty())
         {
             binding.btnUserHomeGoToCart.setVisibility(View.GONE);
             binding.tvTotalCostCart.setVisibility(View.GONE);
         }
+    }
+
+    private void setUpRecyclerView(){
+        dialog.show();
         FirebaseRecyclerOptions<AdminItems> options =
                 new FirebaseRecyclerOptions.Builder<AdminItems>()
                         .setQuery(query, AdminItems.class)
@@ -137,14 +145,13 @@ public class UserHomePage extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull final HomePageViewHolder holder, final int position, @NonNull final AdminItems model) {
                 dialog.dismiss();
-                holder.setPrice("Rs:"+model.getPrice()+"/"+model.getUnit());
+                holder.setPrice("Rs:" + model.getPrice() + "/" + model.getUnit());
 
-                if(model.getUnit().contains("gram"))
+                if (model.getUnit().contains("gram"))
                     holder.setUnit("gram");
-                else if(model.getUnit().contains("kg")){
+                else if (model.getUnit().contains("kg")) {
                     holder.setUnit("kg");
-                }
-                else if(model.getUnit().contains("piece"))
+                } else if (model.getUnit().contains("piece"))
                     holder.setUnit("piece");
 
                 if (addedOnCart.containsKey(model.getName())) {
@@ -152,11 +159,9 @@ public class UserHomePage extends AppCompatActivity {
                     costs[position] = nameCost.get(model.getName());
                     holder.userHomeTopLayout.setVisibility(View.VISIBLE);
 
-                }
-                else
-                {
-                    quantities[position]=0;
-                    costs[position]=0;
+                } else {
+                    quantities[position] = 0;
+                    costs[position] = 0;
                     holder.userHomeTopLayout.setVisibility(View.GONE);
                 }
 
@@ -172,72 +177,39 @@ public class UserHomePage extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         //GETTING INTEGER PART FROM RATE OF ITEM
-                        String rateQuantity=model.getUnit();
-                        if(rateQuantity.contains(" ")){
-                            rateQuantity= rateQuantity.substring(0, rateQuantity.indexOf(" "));
+                        String rateQuantity = model.getUnit();
+                        if (rateQuantity.contains(" ")) {
+                            rateQuantity = rateQuantity.substring(0, rateQuantity.indexOf(" "));
                         }
 
-                        if (model.getUnit().equals("100 gram")&&quantities[position]>0) {
-                            quantities[position]-=100;
-                            costs[position] = quantities[position] * Integer.parseInt(model.getPrice()) / Integer.parseInt(rateQuantity);
-                            holder.setItemCost(String.valueOf(costs[position]));
-                            holder.setQuantity(String.valueOf(quantities[position]));
-                        }
-                        else if (model.getUnit().equals("250 gram")&&quantities[position]>0) {
-                            quantities[position]-=250;
-                            costs[position] = quantities[position] * Integer.parseInt(model.getPrice()) / Integer.parseInt(rateQuantity);
-                            holder.setItemCost(String.valueOf(costs[position]));
-                            holder.setQuantity(String.valueOf(quantities[position]));
-                        }
-                        else if (model.getUnit().equals("500 gram")&&quantities[position]>0) {
-                            quantities[position]-=500;
-                            costs[position] = quantities[position] * Integer.parseInt(model.getPrice()) / Integer.parseInt(rateQuantity);
-                            holder.setItemCost(String.valueOf(costs[position]));
-                            holder.setQuantity(String.valueOf(quantities[position]));
-                        }
-                        else if (model.getUnit().equals("1 kg")&&quantities[position]>0) {
-                            quantities[position]-=1;
-                            costs[position] = quantities[position] * Integer.parseInt(model.getPrice()) / Integer.parseInt(rateQuantity);
-                            holder.setItemCost(String.valueOf(costs[position]));
-                            holder.setQuantity(String.valueOf(quantities[position]));
-                        }
-                        else if (model.getUnit().equals("1 piece")&&quantities[position]>0) {
-                            quantities[position]-=1;
-                            costs[position] = quantities[position] * Integer.parseInt(model.getPrice()) / Integer.parseInt(rateQuantity);
-                            holder.setItemCost(String.valueOf(costs[position]));
-                            holder.setQuantity(String.valueOf(quantities[position]));
-                        }
-                        else if (model.getUnit().equals("6 piece")&&quantities[position]>0) {
-                            quantities[position]-=6;
-                            costs[position] = quantities[position] * Integer.parseInt(model.getPrice()) / Integer.parseInt(rateQuantity);
-                            holder.setItemCost(String.valueOf(costs[position]));
-                            holder.setQuantity(String.valueOf(quantities[position]));
-                        }
-                        else if (model.getUnit().equals("12 piece")&&quantities[position]>0) {
-                            quantities[position]-=12;
-                            costs[position] = quantities[position] * Integer.parseInt(model.getPrice()) / Integer.parseInt(rateQuantity);
-                            holder.setItemCost(String.valueOf(costs[position]));
-                            holder.setQuantity(String.valueOf(quantities[position]));
-                        }
-                        else if (model.getUnit().equals("50 gram")&&quantities[position]>0) {
-                            quantities[position]-=50;
-                            costs[position] = quantities[position] * Integer.parseInt(model.getPrice()) / Integer.parseInt(rateQuantity);
-                            holder.tvItemCost.setText(String.valueOf(costs[position]));
-                            holder.setQuantity(String.valueOf(quantities[position]));
+                        if (model.getUnit().equals("100 gram") && quantities[position] > 0) {
+                            updateUIAfterAddOrRemove(100,position,holder,"remove",model,rateQuantity);
+                        } else if (model.getUnit().equals("250 gram") && quantities[position] > 0) {
+                            updateUIAfterAddOrRemove(250,position,holder,"remove",model,rateQuantity);
+                        } else if (model.getUnit().equals("500 gram") && quantities[position] > 0) {
+                            updateUIAfterAddOrRemove(500,position,holder,"remove",model,rateQuantity);
+                        } else if (model.getUnit().equals("1 kg") && quantities[position] > 0) {
+                            updateUIAfterAddOrRemove(1,position,holder,"remove",model,rateQuantity);
+                        } else if (model.getUnit().equals("1 piece") && quantities[position] > 0) {
+                            updateUIAfterAddOrRemove(1,position,holder,"remove",model,rateQuantity);
+                        } else if (model.getUnit().equals("6 piece") && quantities[position] > 0) {
+                            updateUIAfterAddOrRemove(6,position,holder,"remove",model,rateQuantity);
+                        } else if (model.getUnit().equals("12 piece") && quantities[position] > 0) {
+                            updateUIAfterAddOrRemove(12,position,holder,"remove",model,rateQuantity);
+                        } else if (model.getUnit().equals("50 gram") && quantities[position] > 0) {
+                            updateUIAfterAddOrRemove(50,position,holder,"remove",model,rateQuantity);
                         }
 
                         binding.tvTotalCostCart.setText(String.valueOf(sumCost()));
 
-                        if(quantities[position]==0) {
+                        if (quantities[position] == 0) {
                             addedOnCart.remove(model.getName());
                             nameCost.remove(model.getName());
                             cartReference.child(model.getName()).removeValue();
                             holder.userHomeTopLayout.setVisibility(View.GONE);
-                        }
-                        else
-                        {
-                            addedOnCart.put(model.getName(),quantities[position]);
-                            nameCost.put(model.getName(),costs[position]);
+                        } else {
+                            addedOnCart.put(model.getName(), quantities[position]);
+                            nameCost.put(model.getName(), costs[position]);
                             cartReference.child(model.getName()).child("name").setValue(model.getName());
                             cartReference.child(model.getName()).child("imageUrl").setValue(model.getImageUrl());
                             cartReference.child(model.getName()).child("price").setValue(model.getPrice());
@@ -248,8 +220,7 @@ public class UserHomePage extends AppCompatActivity {
                             totalCostReference.setValue(String.valueOf(sumCost()));
                         }
 
-                        if(addedOnCart.isEmpty())
-                        {
+                        if (addedOnCart.isEmpty()) {
                             binding.btnUserHomeGoToCart.setVisibility(View.GONE);
                             binding.tvTotalCostCart.setVisibility(View.GONE);
                         }
@@ -260,66 +231,34 @@ public class UserHomePage extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         //GETTING INTEGER PART FROM RATE OF ITEM
-                        String rateQuantity=model.getUnit();
-                        if(rateQuantity.contains(" ")){
-                            rateQuantity= rateQuantity.substring(0, rateQuantity.indexOf(" "));
+                        String rateQuantity = model.getUnit();
+                        if (rateQuantity.contains(" ")) {
+                            rateQuantity = rateQuantity.substring(0, rateQuantity.indexOf(" "));
                         }
 
                         if (model.getUnit().equals("100 gram")) {
-                            quantities[position]+=100;
-                            costs[position] = quantities[position] * Integer.parseInt(model.getPrice()) / Integer.parseInt(rateQuantity);
-                            holder.tvItemCost.setText(String.valueOf(costs[position]));
-                            holder.setQuantity(String.valueOf(quantities[position]));
-                        }
-                        else if (model.getUnit().equals("250 gram")) {
-                            quantities[position]+=250;
-                            costs[position] = quantities[position] * Integer.parseInt(model.getPrice()) / Integer.parseInt(rateQuantity);
-                            holder.tvItemCost.setText(String.valueOf(costs[position]));
-                            holder.setQuantity(String.valueOf(quantities[position]));
-                        }
-                        else if (model.getUnit().equals("500 gram")) {
-                            quantities[position]+=500;
-                            costs[position] = quantities[position] * Integer.parseInt(model.getPrice()) / Integer.parseInt(rateQuantity);
-                            holder.tvItemCost.setText(String.valueOf(costs[position]));
-                            holder.setQuantity(String.valueOf(quantities[position]));
-                        }
-                        else if (model.getUnit().equals("1 kg")) {
-                            quantities[position]+=1;
-                            costs[position] = quantities[position] * Integer.parseInt(model.getPrice()) / Integer.parseInt(rateQuantity);
-                            holder.tvItemCost.setText(String.valueOf(costs[position]));
-                            holder.setQuantity(String.valueOf(quantities[position]));
-                        }
-                        else if (model.getUnit().equals("1 piece")) {
-                            quantities[position]+=1;
-                            costs[position] = quantities[position] * Integer.parseInt(model.getPrice()) / Integer.parseInt(rateQuantity);
-                            holder.tvItemCost.setText(String.valueOf(costs[position]));
-                            holder.setQuantity(String.valueOf(quantities[position]));
-                        }
-                        else if (model.getUnit().equals("6 piece")) {
-                            quantities[position]+=6;
-                            costs[position] = quantities[position] * Integer.parseInt(model.getPrice()) / Integer.parseInt(rateQuantity);
-                            holder.tvItemCost.setText(String.valueOf(costs[position]));
-                            holder.setQuantity(String.valueOf(quantities[position]));
-                        }
-                        else if (model.getUnit().equals("12 piece")) {
-                            quantities[position]+=12;
-                            costs[position] = quantities[position] * Integer.parseInt(model.getPrice()) / Integer.parseInt(rateQuantity);
-                            holder.tvItemCost.setText(String.valueOf(costs[position]));
-                            holder.setQuantity(String.valueOf(quantities[position]));
-                        }
-                        else if (model.getUnit().equals("50 gram")) {
-                            quantities[position]+=50;
-                            costs[position] = quantities[position] * Integer.parseInt(model.getPrice()) / Integer.parseInt(rateQuantity);
-                            holder.tvItemCost.setText(String.valueOf(costs[position]));
-                            holder.setQuantity(String.valueOf(quantities[position]));
+                            updateUIAfterAddOrRemove(100,position,holder,"add",model,rateQuantity);
+                        } else if (model.getUnit().equals("250 gram")) {
+                            updateUIAfterAddOrRemove(250,position,holder,"add",model,rateQuantity);
+                        } else if (model.getUnit().equals("500 gram")) {
+                            updateUIAfterAddOrRemove(500,position,holder,"add",model,rateQuantity);
+                        } else if (model.getUnit().equals("1 kg")) {
+                            updateUIAfterAddOrRemove(1,position,holder,"add",model,rateQuantity);
+                        } else if (model.getUnit().equals("1 piece")) {
+                            updateUIAfterAddOrRemove(1,position,holder,"add",model,rateQuantity);
+                        } else if (model.getUnit().equals("6 piece")) {
+                            updateUIAfterAddOrRemove(6,position,holder,"add",model,rateQuantity);
+                        } else if (model.getUnit().equals("12 piece")) {
+                            updateUIAfterAddOrRemove(12,position,holder,"add",model,rateQuantity);
+                        } else if (model.getUnit().equals("50 gram")) {
+                            updateUIAfterAddOrRemove(50,position,holder,"add",model,rateQuantity);
                         }
 
                         binding.tvTotalCostCart.setText(String.valueOf(sumCost()));
 
-                        if(quantities[position]!=0)
-                        {
-                            addedOnCart.put(model.getName(),quantities[position]);
-                            nameCost.put(model.getName(),costs[position]);
+                        if (quantities[position] != 0) {
+                            addedOnCart.put(model.getName(), quantities[position]);
+                            nameCost.put(model.getName(), costs[position]);
                             cartReference.child(model.getName()).child("name").setValue(model.getName());
                             cartReference.child(model.getName()).child("imageUrl").setValue(model.getImageUrl());
                             cartReference.child(model.getName()).child("price").setValue(model.getPrice());
@@ -342,6 +281,17 @@ public class UserHomePage extends AppCompatActivity {
         binding.userHomeRecyclerView.setAdapter(adapter);
     }
 
+    private void updateUIAfterAddOrRemove(int quantity, int position, HomePageViewHolder holder, String todo,AdminItems model,String rateQuantity) {
+        if(todo.equals("remove")){
+            quantities[position] -= quantity;
+        }
+        else{
+            quantities[position] += quantity;
+        }
+        costs[position] = quantities[position] * Integer.parseInt(model.getPrice()) / Integer.parseInt(rateQuantity);
+        holder.setItemCost(String.valueOf(costs[position]));
+        holder.setQuantity(String.valueOf(quantities[position]));
+    }
 
 
     public static class HomePageViewHolder extends RecyclerView.ViewHolder {

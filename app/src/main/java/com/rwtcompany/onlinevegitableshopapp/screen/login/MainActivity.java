@@ -237,7 +237,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<InstanceIdResult> task) {
                         if (!task.isSuccessful()) {
-                            Log.i("Main", "Error in saving token");
+                            Log.i("Main", task.getException().toString());
+                            Toast.makeText(MainActivity.this, "Notification service is not activated. Please logout and then login again later.",Toast.LENGTH_LONG).show();
                             return;
                         }
                         String token = task.getResult().getToken();

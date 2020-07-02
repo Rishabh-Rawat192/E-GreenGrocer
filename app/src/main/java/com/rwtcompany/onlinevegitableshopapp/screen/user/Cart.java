@@ -96,8 +96,8 @@ public class Cart extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Getting things ready...");
         progressDialog.setCancelable(false);
-        progressDialog.show();
 
+        //Getting users saved address,number and name if exists
         userReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -110,34 +110,35 @@ public class Cart extends AppCompatActivity {
                     number = "";
                     name = "";
                 }
+            }
 
-                FirebaseDatabase.getInstance().getReference().child("admin").child("price").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        progressDialog.dismiss();
-                        deliveryCharge = dataSnapshot.getValue().toString();
-                        String price = "Delivery Charge->" + "Rs:" + deliveryCharge;
-                        String tvCost = "Rs:" + sumCost() + "+" + deliveryCharge;
-                        binding.tvTotalCostCart.setText(tvCost);
-                        if (!UserHomePage.shownDeliveryDialog) {
-                            final AlertDialog.Builder builder = new AlertDialog.Builder(Cart.this);
-                            builder.setTitle(price);
-                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            });
-                            builder.show();
-                            UserHomePage.shownDeliveryDialog = true;
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(Cart.this, databaseError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        progressDialog.show();
+        //Getting delivery price and then displaying it
+        FirebaseDatabase.getInstance().getReference().child("admin").child("price").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                progressDialog.dismiss();
+                deliveryCharge = dataSnapshot.getValue().toString();
+                String price = "Delivery Charge->" + "Rs:" + deliveryCharge;
+                String tvCost = "Rs:" + sumCost() + "+" + deliveryCharge;
+                binding.tvTotalCostCart.setText(tvCost);
+                if (!UserHomePage.shownDeliveryDialog) {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(Cart.this);
+                    builder.setTitle(price);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
                         }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        progressDialog.dismiss();
-                        Toast.makeText(Cart.this, databaseError.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
+                    });
+                    builder.show();
+                    UserHomePage.shownDeliveryDialog = true;
+                }
             }
 
             @Override
@@ -147,6 +148,7 @@ public class Cart extends AppCompatActivity {
             }
         });
 
+        //Saving data from cartReference to ordersReference
         cartReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -160,10 +162,13 @@ public class Cart extends AppCompatActivity {
         });
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
+        setUpRecyclerView();
+    }
+
+    private void setUpRecyclerView(){
         progressDialog.show();
         FirebaseRecyclerOptions<CartItems> options =
                 new FirebaseRecyclerOptions.Builder<CartItems>()
@@ -407,6 +412,7 @@ public class Cart extends AppCompatActivity {
 
         binding.cartRecyclerView.setAdapter(adapter);
     }
+
 
     int sumCost() {
         int totalCost = 0;
