@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,7 +26,7 @@ import com.google.firebase.iid.InstanceIdResult;
 import com.rwtcompany.onlinevegitableshopapp.R;
 import com.rwtcompany.onlinevegitableshopapp.databinding.ActivityMainBinding;
 import com.rwtcompany.onlinevegitableshopapp.screen.admin.AdminHomePage;
-import com.rwtcompany.onlinevegitableshopapp.screen.user.UserHomePage;
+import com.rwtcompany.onlinevegitableshopapp.screen.user.home.UserHomePageActivity;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -65,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     else
                     {
-                        startActivity(new Intent(MainActivity.this, UserHomePage.class));
+                        startActivity(new Intent(MainActivity.this, UserHomePageActivity.class));
                     }
                     dialog.dismiss();
                     finish();
@@ -122,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                         adminTest();
                     }
                     else {
-                        startActivity(new Intent(MainActivity.this, UserHomePage.class));
+                        startActivity(new Intent(MainActivity.this, UserHomePageActivity.class));
                         finish();
                     }
                 }
@@ -186,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
                             adminTest();
                         }
                         else {
-                            startActivity(new Intent(MainActivity.this,UserHomePage.class));
+                            startActivity(new Intent(MainActivity.this, UserHomePageActivity.class));
                             finish();
                         }
                     }

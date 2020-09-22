@@ -5,36 +5,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".screen.user.UserHomePage">
-
-    <Button
-        android:id="@+id/btnUserHomeGoToCart"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="5dp"
-        android:layout_weight="1"
-        android:background="@drawable/button_shape"
-        android:onClick="goToCart"
-        android:text="@string/go_to_cart"
-        android:textColor="@color/white"
-        android:textSize="30sp"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/tvTotalCostCart"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/_0"
-        android:textSize="22sp"
-        android:visibility="gone" />
+    tools:context=".screen.user.home.UserHomePageActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/userHomeRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="10">
+        android:layout_weight="13"
+        tools:listitem="@layout/user_home_custom_layout">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <Button
+        android:id="@+id/btnUserHomeGoToCart"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="3dp"
+        android:layout_weight="1"
+        android:background="@color/colorPrimaryDark"
+        android:onClick="goToCart"
+        android:text="@string/go_to_cart"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
 </LinearLayout>

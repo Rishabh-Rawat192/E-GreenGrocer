@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     android:layout_height="match_parent"
-    tools:context=".screen.user.Cart">
+    android:orientation="vertical"
+    tools:context=".screen.user.cart.CartActivity">
 
     <TextView
         android:id="@+id/tvTotalCostCart"
@@ -14,14 +14,17 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/_0"
-        android:textColor="@android:color/background_dark"
-        android:textSize="24sp" />
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cartRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="9">
+        android:layout_weight="12"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/user_cart_custom_layout">
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -29,11 +32,13 @@
         android:id="@+id/btnOrder"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="3dp"
         android:layout_weight="1"
-        android:background="@drawable/button_shape"
+        android:background="@color/colorPrimaryDark"
         android:onClick="order"
         android:text="@string/order"
         android:textColor="@color/white"
-        android:textSize="30sp" />
+        android:textSize="18sp" />
 </LinearLayout>

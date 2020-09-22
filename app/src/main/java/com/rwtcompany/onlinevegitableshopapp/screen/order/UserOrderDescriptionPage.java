@@ -25,7 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.rwtcompany.onlinevegitableshopapp.databinding.ActivityUserOrderDescriptionPageBinding;
-import com.rwtcompany.onlinevegitableshopapp.model.CartItems;
+import com.rwtcompany.onlinevegitableshopapp.model.CartItem;
 import com.rwtcompany.onlinevegitableshopapp.R;
 
 public class UserOrderDescriptionPage extends AppCompatActivity {
@@ -91,12 +91,12 @@ public class UserOrderDescriptionPage extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         dialog.show();
-        FirebaseRecyclerOptions<CartItems> options =
-                new FirebaseRecyclerOptions.Builder<CartItems>()
-                        .setQuery(orderedItemsReference, CartItems.class)
+        FirebaseRecyclerOptions<CartItem> options =
+                new FirebaseRecyclerOptions.Builder<CartItem>()
+                        .setQuery(orderedItemsReference, CartItem.class)
                         .setLifecycleOwner(this)
                         .build();
-        FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<CartItems, MyViewHolder>(options) {
+        FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<CartItem, MyViewHolder>(options) {
             @NonNull
             @Override
             public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -105,7 +105,7 @@ public class UserOrderDescriptionPage extends AppCompatActivity {
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull MyViewHolder holder, int position, @NonNull CartItems model) {
+            protected void onBindViewHolder(@NonNull MyViewHolder holder, int position, @NonNull CartItem model) {
                 dialog.dismiss();
                 Glide.with(UserOrderDescriptionPage.this).load(model.getImageUrl()).into(holder.ivOrderedItem);
                 holder.setName(model.getName());

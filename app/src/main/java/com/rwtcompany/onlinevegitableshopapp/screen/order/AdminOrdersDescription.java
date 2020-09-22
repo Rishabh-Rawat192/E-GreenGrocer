@@ -3,7 +3,6 @@ package com.rwtcompany.onlinevegitableshopapp.screen.order;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -12,8 +11,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -25,7 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.rwtcompany.onlinevegitableshopapp.databinding.ActivityAdminOrdersDescriptionBinding;
-import com.rwtcompany.onlinevegitableshopapp.model.CartItems;
+import com.rwtcompany.onlinevegitableshopapp.model.CartItem;
 import com.rwtcompany.onlinevegitableshopapp.R;
 
 public class AdminOrdersDescription extends AppCompatActivity {
@@ -107,12 +104,12 @@ public class AdminOrdersDescription extends AppCompatActivity {
         super.onStart();
 
         dialog.show();
-        FirebaseRecyclerOptions<CartItems> options =
-                new FirebaseRecyclerOptions.Builder<CartItems>()
-                        .setQuery(itemsReference, CartItems.class)
+        FirebaseRecyclerOptions<CartItem> options =
+                new FirebaseRecyclerOptions.Builder<CartItem>()
+                        .setQuery(itemsReference, CartItem.class)
                         .setLifecycleOwner(this)
                         .build();
-        FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<CartItems, UserOrderDescriptionPage.MyViewHolder>(options) {
+        FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<CartItem, UserOrderDescriptionPage.MyViewHolder>(options) {
             @NonNull
             @Override
             public UserOrderDescriptionPage.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -121,7 +118,7 @@ public class AdminOrdersDescription extends AppCompatActivity {
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull UserOrderDescriptionPage.MyViewHolder holder, int position, @NonNull CartItems model) {
+            protected void onBindViewHolder(@NonNull UserOrderDescriptionPage.MyViewHolder holder, int position, @NonNull CartItem model) {
                 dialog.dismiss();
                 Glide.with(AdminOrdersDescription.this).load(model.getImageUrl()).into(holder.ivOrderedItem);
                 holder.setName(model.getName());

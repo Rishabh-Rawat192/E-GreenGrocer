@@ -33,7 +33,7 @@
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".screen.user.Cart"
+        <activity android:name=".screen.user.cart.CartActivity"
             android:screenOrientation="portrait"/>
 
         <activity android:name=".screen.admin.AdminItemEdit"
@@ -50,7 +50,7 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".screen.user.UserHomePage"
+            android:name=".screen.user.home.UserHomePageActivity"
             android:screenOrientation="portrait" />
 
         <activity

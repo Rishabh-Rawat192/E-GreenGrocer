@@ -1,6 +1,9 @@
 package com.rwtcompany.onlinevegitableshopapp.model;
 
-public class CartItems {
+import java.io.Serializable;
+import java.util.Objects;
+
+public class CartItem implements Serializable {
     private String name;
     private String imageUrl;
     private String price;
@@ -8,10 +11,10 @@ public class CartItems {
     private String quantity;
     private String cost;
 
-    public CartItems()
+    public CartItem()
     {}
 
-    public CartItems(String name, String imageUrl, String price, String unit, String quantity, String cost) {
+    public CartItem(String name, String imageUrl, String price, String unit, String quantity, String cost) {
         this.name = name;
         this.imageUrl = imageUrl;
         this.price = price;
@@ -66,5 +69,30 @@ public class CartItems {
 
     public void setCost(String cost) {
         this.cost = cost;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CartItem cartItems = (CartItem) o;
+        return name.equals(cartItems.name);
+    }
+
+    @Override
+    public String toString() {
+        return "CartItems{" +
+                "name='" + name + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", price='" + price + '\'' +
+                ", unit='" + unit + '\'' +
+                ", quantity='" + quantity + '\'' +
+                ", cost='" + cost + '\'' +
+                '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }
