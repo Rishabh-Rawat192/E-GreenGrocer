@@ -5,6 +5,9 @@ public class DeliveryDetails {
     private String name;
     private String number;
 
+    public DeliveryDetails() {
+    }
+
     public String getAddress() {
         return address;
     }

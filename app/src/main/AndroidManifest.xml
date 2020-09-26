@@ -16,45 +16,45 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".screen.order.AdminOrdersDescription"
+            android:name=".ui.admin.orderDetails.AdminOrderDescriptionActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
         </activity>
 
-        <activity android:name=".screen.order.AdminOrdersList"
+        <activity android:name=".ui.admin.orderList.AdminOrdersActivity"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".screen.order.UserOrderDescriptionPage"
+        <activity android:name=".ui.user.orderDetails.UserOrderDescriptionActivity"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".screen.order.UserOrders"
+        <activity android:name=".ui.user.orderList.UserOrdersActivity"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".screen.user.cart.CartActivity"
+        <activity android:name=".ui.user.cart.CartActivity"
             android:screenOrientation="portrait"/>
 
-        <activity android:name=".screen.admin.AdminItemEdit"
+        <activity android:name=".ui.admin.editItem.AdminItemEdit"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".screen.admin.AdminAddItem"
+        <activity android:name=".ui.admin.addItem.AdminAddItem"
             android:screenOrientation="portrait">
         </activity>
 
         <activity
-            android:name=".screen.admin.AdminHomePage"
+            android:name=".ui.admin.home.AdminHomePage"
             android:theme="@style/AdminHomeTheme"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".screen.user.home.UserHomePageActivity"
+            android:name=".ui.user.home.UserHomePageActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".SplashScreen"
+            android:name=".ui.SplashScreen"
             android:screenOrientation="portrait"
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
@@ -64,7 +64,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".screen.login.MainActivity"
+        <activity android:name=".ui.login.MainActivity"
             android:screenOrientation="portrait"/>
 
         <activity

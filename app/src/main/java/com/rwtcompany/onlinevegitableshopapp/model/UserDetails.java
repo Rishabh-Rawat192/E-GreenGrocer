@@ -1,28 +1,14 @@
 package com.rwtcompany.onlinevegitableshopapp.model;
 
-public class UserDetails {
-    private DeliveryDetails deliveryDetails;
+public class UserDetails extends DeliveryDetails {
     private String email;
 
-    public UserDetails(DeliveryDetails deliveryDetails, String email) {
-        this.deliveryDetails = deliveryDetails;
+    public UserDetails() {
+    }
+
+    public UserDetails(String address, String name, String number, String email) {
+        super(address, name, number);
         this.email = email;
-    }
-
-    public DeliveryDetails getDeliveryDetails() {
-        return deliveryDetails;
-    }
-
-    public void setDeliveryDetails(DeliveryDetails deliveryDetails) {
-        this.deliveryDetails = deliveryDetails;
-    }
-
-    @Override
-    public String toString() {
-        return "UserDetails{" +
-                "deliveryDetails=" + deliveryDetails +
-                ", email='" + email + '\'' +
-                '}';
     }
 
     public String getEmail() {

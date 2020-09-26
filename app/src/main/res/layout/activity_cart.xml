@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".screen.user.cart.CartActivity">
+    tools:context=".ui.user.cart.CartActivity">
 
     <TextView
         android:id="@+id/tvTotalCostCart"

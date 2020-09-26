@@ -1,19 +1,22 @@
 package com.rwtcompany.onlinevegitableshopapp.model;
 
-public class OrderDetails {
-    private DeliveryDetails deliveryDetails;
+public class OrderDetails extends DeliveryDetails {
     private String deliveryCharge;
     private String orderId;
     private String orderStatus;
     private String requestTime;
     private String total;
 
-    public DeliveryDetails getDeliveryDetails() {
-        return deliveryDetails;
+    public OrderDetails() {
     }
 
-    public void setDeliveryDetails(DeliveryDetails deliveryDetails) {
-        this.deliveryDetails = deliveryDetails;
+    public OrderDetails(String address, String name, String number, String deliveryCharge, String orderId, String orderStatus, String requestTime, String total) {
+        super(address, name, number);
+        this.deliveryCharge = deliveryCharge;
+        this.orderId = orderId;
+        this.orderStatus = orderStatus;
+        this.requestTime = requestTime;
+        this.total = total;
     }
 
     public String getDeliveryCharge() {
@@ -53,15 +56,6 @@ public class OrderDetails {
     }
 
     public void setTotal(String total) {
-        this.total = total;
-    }
-
-    public OrderDetails(DeliveryDetails deliveryDetails, String deliveryCharge, String orderId, String orderStatus, String requestTime, String total) {
-        this.deliveryDetails = deliveryDetails;
-        this.deliveryCharge = deliveryCharge;
-        this.orderId = orderId;
-        this.orderStatus = orderStatus;
-        this.requestTime = requestTime;
         this.total = total;
     }
 }

@@ -2,13 +2,14 @@ package com.rwtcompany.onlinevegitableshopapp.repository;
 
 import androidx.lifecycle.LiveData;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.rwtcompany.onlinevegitableshopapp.model.AdminOrder;
 import com.rwtcompany.onlinevegitableshopapp.model.CartItem;
 import com.rwtcompany.onlinevegitableshopapp.model.DeliveryDetails;
 import com.rwtcompany.onlinevegitableshopapp.model.OrderDetails;
 import com.rwtcompany.onlinevegitableshopapp.model.OrderExtraCharges;
+import com.rwtcompany.onlinevegitableshopapp.model.TaskCompleted;
 import com.rwtcompany.onlinevegitableshopapp.model.UserDetails;
+import com.rwtcompany.onlinevegitableshopapp.model.UserOrder;
 import com.rwtcompany.onlinevegitableshopapp.repository.remote.RemoteRepository;
 
 import java.util.List;
@@ -32,8 +33,8 @@ public class Repository {
         remoteRepository.placeOrder(items, orderDetails);
     }
 
-    public void saveUserAddress(DeliveryDetails details) {
-        remoteRepository.saveUserAddress(details);
+    public LiveData<TaskCompleted> saveUserAddress(DeliveryDetails details) {
+        return remoteRepository.saveUserAddress(details);
     }
 
     public LiveData<UserDetails> getUserDetails() {
@@ -44,4 +45,28 @@ public class Repository {
         return remoteRepository.getOrderExtraCharge();
     }
 
+    public LiveData<List<UserOrder>> getUserOrders() {
+        return remoteRepository.getUserOrders();
+    }
+
+    public LiveData<List<AdminOrder>> getAllOrders() {
+        return remoteRepository.getAllOrders();
+    }
+
+    public LiveData<OrderDetails> getOrderDetails(String orderId) {
+        return remoteRepository.getOrderDetails(orderId);
+    }
+
+    public LiveData<OrderDetails> getOrderDetails(String orderId, String uuid) {
+        return remoteRepository.getOrderDetails(orderId, uuid);
+    }
+
+    public LiveData<TaskCompleted> removeOrder(String orderId, String uid) {
+        return remoteRepository.removeOrder(orderId, uid);
+    }
+
+
+    public LiveData<TaskCompleted> updateOrderStatus(String orderStatus, String orderId, String uid) {
+        return remoteRepository.updateOrderStatus(orderStatus, orderId, uid);
+    }
 }

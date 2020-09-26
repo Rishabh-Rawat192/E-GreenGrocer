@@ -5,14 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".screen.user.home.UserHomePageActivity">
+    tools:context=".ui.user.home.UserHomePageActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/userHomeRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="13"
-        tools:listitem="@layout/user_home_custom_layout">
+        tools:listitem="@layout/user_home_custom_layout"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
 
     </androidx.recyclerview.widget.RecyclerView>
 
