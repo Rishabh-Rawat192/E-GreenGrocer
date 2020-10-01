@@ -15,10 +15,9 @@ import com.rwtcompany.onlinevegitableshopapp.model.UserOrder;
 import java.util.List;
 
 public class UserOrdersListAdapter extends RecyclerView.Adapter<UserOrdersListAdapter.MyViewHolder> {
-    List<UserOrder> list;
-    Context context;
-    OnRowListener onRowListener;
-
+    private List<UserOrder> list;
+    private Context context;
+    private OnRowListener onRowListener;
 
     public interface OnRowListener
     {
@@ -45,18 +44,12 @@ public class UserOrdersListAdapter extends RecyclerView.Adapter<UserOrdersListAd
         holder.tvOrderId.setText(data);
 
         holder.tvOrderStatus.setText(list.get(position).getOrderStatus());
-        holder.tvTotalPrice.setText("Rs:"+list.get(position).getTotalCost());
-        holder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onRowListener.positionClick(position);
-            }
-        });
+        holder.tvTotalPrice.setText(context.getResources().getString(R.string.rs)+list.get(position).getTotalCost());
+        holder.view.setOnClickListener(v -> onRowListener.positionClick(position));
 
     }
 
-
-    public class MyViewHolder extends RecyclerView.ViewHolder
+    public static class MyViewHolder extends RecyclerView.ViewHolder
     {
         View view;
         TextView tvOrderId,tvTotalPrice,tvOrderStatus;

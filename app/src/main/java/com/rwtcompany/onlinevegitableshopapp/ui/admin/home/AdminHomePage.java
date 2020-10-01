@@ -64,7 +64,6 @@ public class AdminHomePage extends AppCompatActivity {
         setSupportActionBar(binding.toolbar);
 
         binding.adminRecyclerView.hasFixedSize();
-        binding.adminRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child("items");
         adminReference = FirebaseDatabase.getInstance().getReference().child("admin");
@@ -83,10 +82,10 @@ public class AdminHomePage extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         adminPin=dataSnapshot.child("pin").getValue().toString();
 
-                        String deliveryCharge="Delivery Charge:Rs:"+dataSnapshot.child("price").getValue().toString();
+                        String deliveryCharge="Delivery Charge : "+getResources().getString(R.string.rs)+dataSnapshot.child("price").getValue().toString();
                         tvDeliveryCharge.setText(deliveryCharge);
 
-                        String minOrderCharge="Min Order Charge:Rs:"+dataSnapshot.child("minOrderPrice").getValue().toString();
+                        String minOrderCharge="Min Order Charge : "+getResources().getString(R.string.rs)+dataSnapshot.child("minOrderPrice").getValue().toString();
                         tvMinOrderCharge.setText(minOrderCharge);
                         dialog.dismiss();
                     }
@@ -129,19 +128,16 @@ public class AdminHomePage extends AppCompatActivity {
             orderCostDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
             final EditText etMinOrderPrice = orderCostDialog.findViewById(R.id.etMinOrderPrice);
             Button btnMinOrderPrice = orderCostDialog.findViewById(R.id.btnMinOrderPrice);
-            btnMinOrderPrice.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String price=etMinOrderPrice.getText().toString();
-                    if(price.isEmpty())
-                    {
-                        Toast.makeText(AdminHomePage.this,"enter price please",Toast.LENGTH_LONG).show();
-                    }
-                    else {
-                        FirebaseDatabase.getInstance().getReference().child("admin").child("minOrderPrice").setValue(price);
-                        Toast.makeText(AdminHomePage.this,"price set!!",Toast.LENGTH_LONG).show();
-                        orderCostDialog.dismiss();
-                    }
+            btnMinOrderPrice.setOnClickListener(v1 -> {
+                String price=etMinOrderPrice.getText().toString();
+                if(price.isEmpty())
+                {
+                    Toast.makeText(AdminHomePage.this,"enter price please",Toast.LENGTH_LONG).show();
+                }
+                else {
+                    FirebaseDatabase.getInstance().getReference().child("admin").child("minOrderPrice").setValue(price);
+                    Toast.makeText(AdminHomePage.this,"price set!!",Toast.LENGTH_LONG).show();
+                    orderCostDialog.dismiss();
                 }
             });
             orderCostDialog.show();
@@ -153,7 +149,10 @@ public class AdminHomePage extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        setUpRecyclerView();
+    }
 
+    private void setUpRecyclerView(){
         dialog.show();
         Query baseQuery=databaseReference;
 
@@ -186,23 +185,19 @@ public class AdminHomePage extends AppCompatActivity {
                     holder.setPrice("Not available");
                 else
                 {
-                    String price="Rs: "+model.getPrice()+" / "+model.getUnit();
+                    String price=getResources().getString(R.string.rs)+model.getPrice()+" / "+model.getUnit();
                     holder.setPrice(price);
                 }
 
-
                 Glide.with(AdminHomePage.this).load(model.getImageUrl()).into(holder.ivItem);
 
-                holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        Intent intent=new Intent(AdminHomePage.this, AdminItemEdit.class);
-                        intent.putExtra("name",model.getName());
-                        intent.putExtra("price", model.getPrice());
-                        intent.putExtra("imageUrl", model.getImageUrl());
-                        startActivity(intent);
-                        return true;
-                    }
+                holder.mView.setOnLongClickListener(v -> {
+                    Intent intent=new Intent(AdminHomePage.this, AdminItemEdit.class);
+                    intent.putExtra("name",model.getName());
+                    intent.putExtra("price", model.getPrice());
+                    intent.putExtra("imageUrl", model.getImageUrl());
+                    startActivity(intent);
+                    return true;
                 });
             }
 

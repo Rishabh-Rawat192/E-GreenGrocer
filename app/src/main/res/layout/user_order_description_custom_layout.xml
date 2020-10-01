@@ -4,45 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="5dp"
-    android:layout_marginTop="7dp"
-    android:layout_marginEnd="5dp"
-    android:orientation="vertical"
-    app:cardCornerRadius="10dp">
+    android:layout_marginTop="5dp">
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimaryLight"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:baselineAligned="false">
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/ivOrderedItem"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_gravity="center_vertical"
-            android:layout_weight="2"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/ivOrderedItem"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center_vertical"
-                tools:srcCompat="@drawable/icon_veg2" />
-
-        </LinearLayout>
+            tools:srcCompat="@drawable/icon_veg2" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="5"
+            android:layout_marginStart="10dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tvOrederedItemName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
                 android:textSize="18sp"
                 tools:text="Apple" />
 
@@ -50,6 +39,7 @@
                 android:id="@+id/tvOrderedItemPrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
                 android:textSize="18sp"
                 tools:text="Rs:175/100 gm" />
 
@@ -58,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textColor="@color/cardview_dark_background"
+                android:textColor="@android:color/holo_orange_dark"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 tools:text="Quantity:750 gram" />
@@ -68,7 +58,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textColor="@color/cardview_dark_background"
+                android:textColor="@android:color/holo_orange_dark"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 tools:text="Cost:Rs:10000" />

@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 
 import com.rwtcompany.onlinevegitableshopapp.databinding.ActivityCartBinding;
 import com.rwtcompany.onlinevegitableshopapp.R;
@@ -47,7 +50,7 @@ public class CartActivity extends AppCompatActivity implements CustomAdapter.OnC
 
         viewModel.orderExtraCharges.observe(this,orderExtraCharges -> {
             //Show Delivery charge alert
-            showAlert("Min Delivery Charge Rs -> "+orderExtraCharges.getDeliveryCharge());
+            showAlert("Delivery Charge "+getResources().getString(R.string.rs)+orderExtraCharges.getDeliveryCharge());
             setUpTotalCost(viewModel.totalCost,Integer.parseInt(orderExtraCharges.getDeliveryCharge()));
         });
         
@@ -70,7 +73,8 @@ public class CartActivity extends AppCompatActivity implements CustomAdapter.OnC
     }
 
     private void setUpTotalCost(int totalCost,int deliveryCharge){
-        binding.tvTotalCostCart.setText("Rs:-"+totalCost+" + "+deliveryCharge);
+        binding.tvTotalCostCart.setText(getResources().getString(R.string.rs)+totalCost);
+        binding.tvDeliveryCharge.setText(getResources().getString(R.string.rs)+deliveryCharge);
     }
 
     private void showAlert(String message){
@@ -85,7 +89,7 @@ public class CartActivity extends AppCompatActivity implements CustomAdapter.OnC
     public void order(View view) {
         int minOrderPrice=Integer.parseInt(viewModel.orderExtraCharges.getValue().getMinOrderPrice());
         if (viewModel.totalCost < minOrderPrice) {
-            showAlert("Min Rs->" + minOrderPrice + " order required");
+            showAlert("Min "+getResources().getString(R.string.rs) + minOrderPrice + " order required");
         } else {
             if (viewModel.userDetails.getValue().getAddress()!=null) {
                 dialog.setContentView(R.layout.retrieve_address);

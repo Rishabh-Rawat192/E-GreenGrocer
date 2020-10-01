@@ -22,7 +22,7 @@
     <string name="enter_estimate_delivery_date_and_time">enter estimate delivery date and time</string>
     <string name="select_it">select it</string>
     <string name="add_new">add new</string>
-    <string name="rs">Rs:</string>
+    <string name="rs">₹</string>
     <string name="_0">0</string>
     <string name="remove">-</string>
     <string name="add">+</string>

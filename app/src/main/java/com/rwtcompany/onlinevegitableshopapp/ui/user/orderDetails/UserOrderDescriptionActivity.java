@@ -3,6 +3,7 @@ package com.rwtcompany.onlinevegitableshopapp.ui.user.orderDetails;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
@@ -23,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.rwtcompany.onlinevegitableshopapp.databinding.ActivityUserOrderDescriptionBinding;
 import com.rwtcompany.onlinevegitableshopapp.model.CartItem;
 import com.rwtcompany.onlinevegitableshopapp.R;
+import com.rwtcompany.onlinevegitableshopapp.model.OrderDetails;
 
 public class UserOrderDescriptionActivity extends AppCompatActivity {
     private ActivityUserOrderDescriptionBinding binding;
@@ -46,17 +48,7 @@ public class UserOrderDescriptionActivity extends AppCompatActivity {
         String orderId = intent.getStringExtra("orderId");
 
         viewModel = new ViewModelProvider(this, new MyViewModelFactory(orderId)).get(UserOrderDescriptionViewModel.class);
-        viewModel.orderDetails.observe(this,orderDetails -> {
-            String address="Address:-"+orderDetails.getAddress()+"\n"+"Phone:-"+orderDetails.getNumber();
-            binding.tvOrderAddress.setText(address);
-            String total="Rs:"+orderDetails.getTotal();
-            String deliveryCharge=orderDetails.getDeliveryCharge();
-            if(!deliveryCharge.equals("0"))
-                total+="\n+"+deliveryCharge;
-            binding.tvTotalOrderCost.setText(total);
-            String orderStatus = "Delivery:" + orderDetails.getOrderStatus();
-            binding.tvOrderStatus.setText(orderStatus);
-        });
+        viewModel.orderDetails.observe(this, this::setUpOrderDetails);
 
         dialog=new ProgressDialog(this);
         dialog.setMessage("Canceling....");
@@ -71,6 +63,16 @@ public class UserOrderDescriptionActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         setUpRecyclerView();
+    }
+
+    private void setUpOrderDetails(OrderDetails orderDetails){
+        String address="Name : "+orderDetails.getName()+"\nAddress : "+orderDetails.getAddress()+"\n"+"Phone : "+orderDetails.getNumber();
+        binding.tvOrderAddress.setText(address);
+        String total="Total : "+getResources().getString(R.string.rs)+orderDetails.getTotal();
+        total+="\nDelivery Charge : "+getResources().getString(R.string.rs)+orderDetails.getDeliveryCharge();
+        binding.tvTotalOrderCost.setText(total);
+        String orderStatus = "Delivery : " + orderDetails.getOrderStatus();
+        binding.tvOrderStatus.setText(orderStatus);
     }
 
     private void setUpRecyclerView(){
@@ -108,7 +110,6 @@ public class UserOrderDescriptionActivity extends AppCompatActivity {
 
             }
         };
-
         binding.userOrderDescriptionRecyclerView.setAdapter(adapter);
     }
 
@@ -132,17 +133,17 @@ public class UserOrderDescriptionActivity extends AppCompatActivity {
         }
         public void setPrice(String price)
         {
-            String p="Rs:"+price;
+            String p=mView.getResources().getString(R.string.rs)+price;
             tvOrderedItemPrice.setText(p);
         }
         public void setQuantity(String quantity)
         {
-            String s="Quantity:"+quantity;
+            String s="Quantity : "+quantity;
             tvOrderedItemQuantity.setText(s);
         }
         public void setCost(String cost)
         {
-            String c="Rs:"+cost;
+            String c="Cost : "+mView.getResources().getString(R.string.rs)+cost;
             tvOrderedItemCost.setText(c);
         }
     }

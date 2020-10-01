@@ -89,9 +89,9 @@ public class UserHomePageActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull final HomePageViewHolder holder, final int position, @NonNull final AdminItem model) {
                 dialog.dismiss();
-                holder.setPrice("Rs:" + model.getPrice() + "/" + model.getUnit());
+                holder.setPrice(getResources().getString(R.string.rs) + model.getPrice() + "/" + model.getUnit());
 
-                holder.setName(model.getName().substring(0, 1).toUpperCase() + model.getName().substring(1));
+                holder.setName(model.getName());
                 Glide.with(UserHomePageActivity.this).load(model.getImageUrl()).into(holder.ivUserHomeImage);
 
 //              Update button

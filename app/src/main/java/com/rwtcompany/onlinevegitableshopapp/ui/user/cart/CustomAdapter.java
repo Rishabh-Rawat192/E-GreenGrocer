@@ -4,9 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -40,7 +39,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.HomePageVi
 
     @Override
     public void onBindViewHolder(@NonNull CustomAdapter.HomePageViewHolder holder, int position) {
-        holder.setPrice("Rs:" + items.get(position).getPrice() + "/" + items.get(position).getUnit());
+        holder.setPrice(context.getResources().getString(R.string.rs) + items.get(position).getPrice() + "/" + items.get(position).getUnit());
 
         if (items.get(position).getUnit().contains("gram"))
             holder.setUnit("gram");
@@ -51,7 +50,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.HomePageVi
 
         holder.setItemCost(items.get(position).getCost());
         holder.setQuantity(items.get(position).getQuantity());
-        holder.setName(items.get(position).getName().substring(0,1).toUpperCase()+items.get(position).getName().substring(1));
+        holder.setName(items.get(position).getName());
         Glide.with(context).load(items.get(position).getImageUrl()).into(holder.ivUserHomeImage);
 
         holder.btnAdd.setOnClickListener(v ->listener.increaseItemQuantity(position));
@@ -61,9 +60,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.HomePageVi
         View mView;
         ImageView ivUserHomeImage;
         TextView tvUserHomeName,tvUserHomePrice,tvUserHomeQuantity,tvUserHomeUnit,tvItemCost;
-        Button btnAdd, btnRemove;
+        ImageButton btnAdd, btnRemove;
 
-        LinearLayout userHomeTopLayout;
 
         public HomePageViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -76,9 +74,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.HomePageVi
             btnRemove = mView.findViewById(R.id.btn_remove);
             tvUserHomeUnit = mView.findViewById(R.id.tvUerHomeUnit);
             tvItemCost = mView.findViewById(R.id.tvItemCost);
-
-
-            userHomeTopLayout = mView.findViewById(R.id.userHomeTopLayout);
 
         }
         public void setName(String name)
