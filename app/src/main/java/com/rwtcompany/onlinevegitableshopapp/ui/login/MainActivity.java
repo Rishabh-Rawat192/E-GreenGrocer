@@ -24,7 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.rwtcompany.onlinevegitableshopapp.R;
 import com.rwtcompany.onlinevegitableshopapp.databinding.ActivityMainBinding;
-import com.rwtcompany.onlinevegitableshopapp.ui.admin.home.AdminHomePage;
+import com.rwtcompany.onlinevegitableshopapp.ui.admin.home.AdminHomeActivity;
 import com.rwtcompany.onlinevegitableshopapp.ui.user.home.UserHomePageActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                 if (getAdminPin.equals(adminPin)) {
                     database.getReference("admin").child("user").setValue(currentUser.getEmail());
                     saveTokenForFCM();
-                    startActivity(new Intent(MainActivity.this,AdminHomePage.class));
+                    startActivity(new Intent(MainActivity.this, AdminHomeActivity.class));
                     finish();
                 }
                 else

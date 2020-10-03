@@ -1,7 +1,12 @@
 package com.rwtcompany.onlinevegitableshopapp.repository;
 
+import android.net.Uri;
+
 import androidx.lifecycle.LiveData;
 
+import com.rwtcompany.onlinevegitableshopapp.model.AdminItem;
+import com.rwtcompany.onlinevegitableshopapp.model.AdminItemWithKey;
+import com.rwtcompany.onlinevegitableshopapp.model.AdminMetaData;
 import com.rwtcompany.onlinevegitableshopapp.model.AdminOrder;
 import com.rwtcompany.onlinevegitableshopapp.model.CartItem;
 import com.rwtcompany.onlinevegitableshopapp.model.DeliveryDetails;
@@ -65,8 +70,28 @@ public class Repository {
         return remoteRepository.removeOrder(orderId, uid);
     }
 
-
     public LiveData<TaskCompleted> updateOrderStatus(String orderStatus, String orderId, String uid) {
         return remoteRepository.updateOrderStatus(orderStatus, orderId, uid);
     }
+
+    public LiveData<AdminMetaData> getAdminMetaData() {
+        return remoteRepository.getAdminMetaData();
+    }
+
+    public LiveData<TaskCompleted> updateAdminMetaData(AdminMetaData adminMetaData) {
+        return remoteRepository.updateAdminMetaData(adminMetaData);
+    }
+
+    public LiveData<TaskCompleted> addNewProduct(AdminItem item, Uri imageUri) {
+        return remoteRepository.addNewProduct(item, imageUri);
+    }
+
+    public LiveData<TaskCompleted> updateProduct(AdminItemWithKey item, Uri imageUri) {
+        return remoteRepository.updateProduct(item, imageUri);
+    }
+
+    public LiveData<List<AdminItemWithKey>> getAllItems() {
+        return remoteRepository.getAllItems();
+    }
+
 }

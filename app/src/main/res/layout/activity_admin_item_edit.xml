@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.admin.editItem.AdminItemEdit">
+    tools:context=".ui.admin.editItem.AdminItemEditActivity">
 
     <ImageView
         android:id="@+id/ivEditImage"

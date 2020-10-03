@@ -24,7 +24,7 @@ public class CartItem implements Serializable {
     }
 
     public String getName() {
-        return name.substring(0,1).toUpperCase()+name.substring(1);
+        return name;
     }
 
     public void setName(String name) {

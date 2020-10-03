@@ -93,7 +93,7 @@ public class UserHomePageActivity extends AppCompatActivity {
 
                 holder.setName(model.getName());
                 Glide.with(UserHomePageActivity.this).load(model.getImageUrl()).into(holder.ivUserHomeImage);
-
+                
 //              Update button
                 updateItemButton(new CartItem(model.getName(), model.getImageUrl(), model.getPrice(), model.getUnit(), "", String.valueOf(model.getPrice())), holder);
 

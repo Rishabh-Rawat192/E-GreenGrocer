@@ -36,16 +36,16 @@
         <activity android:name=".ui.user.cart.CartActivity"
             android:screenOrientation="portrait"/>
 
-        <activity android:name=".ui.admin.editItem.AdminItemEdit"
+        <activity android:name=".ui.admin.editItem.AdminItemEditActivity"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ui.admin.addItem.AdminAddItem"
+        <activity android:name=".ui.admin.addItem.AdminAddItemActivity"
             android:screenOrientation="portrait">
         </activity>
 
         <activity
-            android:name=".ui.admin.home.AdminHomePage"
+            android:name=".ui.admin.home.AdminHomeActivity"
             android:theme="@style/AdminHomeTheme"
             android:screenOrientation="portrait"/>
 

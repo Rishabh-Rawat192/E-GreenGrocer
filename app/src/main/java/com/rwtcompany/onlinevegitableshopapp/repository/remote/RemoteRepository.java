@@ -1,5 +1,7 @@
 package com.rwtcompany.onlinevegitableshopapp.repository.remote;
 
+import android.net.Uri;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -9,7 +11,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.rwtcompany.onlinevegitableshopapp.model.AdminItem;
+import com.rwtcompany.onlinevegitableshopapp.model.AdminItemWithKey;
+import com.rwtcompany.onlinevegitableshopapp.model.AdminMetaData;
 import com.rwtcompany.onlinevegitableshopapp.model.AdminOrder;
 import com.rwtcompany.onlinevegitableshopapp.model.CartItem;
 import com.rwtcompany.onlinevegitableshopapp.model.DeliveryDetails;
@@ -23,15 +32,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class RemoteRepository {
-    DatabaseReference mRef;
-    FirebaseAuth mAuth;
+    private DatabaseReference mRef;
+    private FirebaseAuth mAuth;
+    private StorageReference mStorage;
+
+    private static String GENERAL_ERROR_MESSAGE = "OOps something went wrong...";
 
     public RemoteRepository() {
         mRef = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
+        mStorage = FirebaseStorage.getInstance().getReference();
     }
 
     public void placeOrder(List<CartItem> items, OrderDetails orderDetails) {
@@ -212,8 +224,10 @@ public class RemoteRepository {
         orderRef.removeValue().addOnCompleteListener(task -> {
             if (task.isSuccessful())
                 isDeleted.setValue(new TaskCompleted(true, null));
-            else
+            else if (task.getException() != null)
                 isDeleted.setValue(new TaskCompleted(false, task.getException().getMessage()));
+            else
+                isDeleted.setValue(new TaskCompleted(false, GENERAL_ERROR_MESSAGE));
         });
         return isDeleted;
     }
@@ -224,10 +238,223 @@ public class RemoteRepository {
         MutableLiveData<TaskCompleted> isNewOrderStatusSaved = new MutableLiveData<>();
         orderStatusRef.setValue(orderStatus).addOnCompleteListener(task -> {
             if (task.isSuccessful())
-                isNewOrderStatusSaved.setValue(new TaskCompleted(true,null));
+                isNewOrderStatusSaved.setValue(new TaskCompleted(true, null));
+            else if (task.getException() != null)
+                isNewOrderStatusSaved.setValue(new TaskCompleted(false, task.getException().getMessage()));
             else
-                isNewOrderStatusSaved.setValue(new TaskCompleted(false, Objects.requireNonNull(task.getException()).getMessage()));
+                isNewOrderStatusSaved.setValue(new TaskCompleted(false, GENERAL_ERROR_MESSAGE));
         });
         return isNewOrderStatusSaved;
+    }
+
+    public LiveData<AdminMetaData> getAdminMetaData() {
+        DatabaseReference adminRef = mRef.child("admin");
+        MutableLiveData<AdminMetaData> data = new MutableLiveData<>();
+
+        adminRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String minOrderPrice = dataSnapshot.child("minOrderPrice").getValue(String.class);
+                String pin = dataSnapshot.child("pin").getValue(String.class);
+                String deliveryCharge = dataSnapshot.child("price").getValue(String.class);
+                String token = dataSnapshot.child("token").getValue(String.class);
+                String email = dataSnapshot.child("user").getValue(String.class);
+
+                data.setValue(new AdminMetaData(minOrderPrice, deliveryCharge, pin, email, token));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                data.setValue(null);
+            }
+        });
+
+        return data;
+
+    }
+
+    public LiveData<TaskCompleted> updateAdminMetaData(AdminMetaData adminMetaData) {
+        DatabaseReference adminRef = mRef.child("admin");
+        MutableLiveData<TaskCompleted> isComplete = new MutableLiveData<>();
+
+        HashMap<String, Object> updatedData = new HashMap<>();
+        if (adminMetaData.getMinOrderPrice() != null)
+            updatedData.put("minOrderPrice", adminMetaData.getMinOrderPrice());
+        if (adminMetaData.getPin() != null)
+            updatedData.put("pin", adminMetaData.getPin());
+        if (adminMetaData.getDeliveryCharge() != null)
+            updatedData.put("price", adminMetaData.getDeliveryCharge());
+        if (adminMetaData.getToken() != null)
+            updatedData.put("token", adminMetaData.getToken());
+        if (adminMetaData.getEmail() != null)
+            updatedData.put("user", adminMetaData.getEmail());
+
+        adminRef.updateChildren(updatedData).addOnCompleteListener(task -> {
+            if (task.isSuccessful())
+                isComplete.setValue(new TaskCompleted(true, null));
+            else if (task.getException() != null)
+                isComplete.setValue(new TaskCompleted(false, task.getException().getMessage()));
+            else
+                isComplete.setValue(new TaskCompleted(false, GENERAL_ERROR_MESSAGE));
+        });
+
+        return isComplete;
+    }
+
+    public LiveData<TaskCompleted> addNewProduct(AdminItem item, Uri imageUri) {
+        DatabaseReference itemRef = mRef.child("items").push();
+        MutableLiveData<TaskCompleted> isTaskCompleted = new MutableLiveData<>();
+
+        String imageName = String.valueOf(System.currentTimeMillis());
+        final StorageReference ref = mStorage.child("images").child(imageName);
+        UploadTask uploadTask = ref.putFile(imageUri);
+
+        //Uploading image
+        uploadTask.continueWithTask(task -> {
+            if (!task.isSuccessful()) {
+                throw task.getException();
+            }
+            // Continue with the task to get the download URL
+            return ref.getDownloadUrl();
+        }).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Uri downloadUri = task.getResult();
+                String imageUrl = downloadUri.toString();
+
+                item.setImageUrl(imageUrl);
+                //Saving item details in DB
+                itemRef.setValue(item);
+                itemRef.child("imageName").setValue(imageName);
+
+                if (item.getUnit().equals("out of stock"))
+                    itemRef.child("available").setValue(false);
+                else
+                    itemRef.child("available").setValue(true);
+
+                isTaskCompleted.setValue(new TaskCompleted(true, null));
+            } else {
+                if (task.getException() != null)
+                    isTaskCompleted.setValue(new TaskCompleted(false, task.getException().getMessage()));
+                else
+                    isTaskCompleted.setValue(new TaskCompleted(false, GENERAL_ERROR_MESSAGE));
+                //Delete uploaded image
+                ref.delete();
+            }
+        });
+
+        return isTaskCompleted;
+    }
+
+    public LiveData<TaskCompleted> updateProduct(AdminItemWithKey item, Uri imageUri) {
+        DatabaseReference itemRef = mRef.child("items").child(item.getKey());
+        MutableLiveData<TaskCompleted> isTaskCompleted = new MutableLiveData<>();
+
+        HashMap<String, Object> newData = new HashMap<>();
+        newData.put("name", item.getAdminItem().getName());
+        newData.put("price", item.getAdminItem().getPrice());
+        newData.put("unit", item.getAdminItem().getUnit());
+
+        if (item.getAdminItem().getUnit().equals("out of stock"))
+            newData.put("available", false);
+        else
+            newData.put("available", true);
+
+        //if image not to be updated
+        if (imageUri == null) {
+            itemRef.updateChildren(newData).addOnCompleteListener(task -> {
+                if (task.isSuccessful())
+                    isTaskCompleted.setValue(new TaskCompleted(true, null));
+                else if (task.getException() != null)
+                    isTaskCompleted.setValue(new TaskCompleted(false, task.getException().getMessage()));
+            });
+        } else {
+            itemRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    StorageReference oldImageRef = mStorage.child("images");
+                    //key as imageName
+                    String oldImageName = item.getKey();
+                    String newImageName = String.valueOf(System.currentTimeMillis());
+
+                    //Delete old image and use newImageName if imageName doesn't exists
+                    if (!dataSnapshot.hasChild("imageName")) {
+                        oldImageRef.child(oldImageName).delete();
+                    }
+                    //Use old image name if imageName exists
+                    else
+                        newImageName = dataSnapshot.child("imageName").getValue(String.class);
+
+                    newData.put("imageName", newImageName);
+
+                    final StorageReference ref = mStorage.child("images").child(newImageName);
+                    UploadTask uploadTask = ref.putFile(imageUri);
+
+                    //Uploading newImage
+                    uploadTask.continueWithTask(task -> {
+                        if (!task.isSuccessful()) {
+                            throw task.getException();
+                        }
+                        // Continue with the task to get the download URL
+                        return ref.getDownloadUrl();
+                    }).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Uri downloadUri = task.getResult();
+                            String imageUrl = downloadUri.toString();
+
+                            newData.put("imageUrl", imageUrl);
+
+                            //Updating item details in DB
+                            itemRef.updateChildren(newData).addOnCompleteListener(task1 -> {
+                                if (task1.isSuccessful()) {
+                                    isTaskCompleted.setValue(new TaskCompleted(true, null));
+                                } else if (task1.getException() != null)
+                                    isTaskCompleted.setValue(new TaskCompleted(false, task1.getException().getMessage()));
+                                else
+                                    isTaskCompleted.setValue(new TaskCompleted(false, GENERAL_ERROR_MESSAGE));
+                            });
+
+                        } else {
+                            if (task.getException() != null)
+                                isTaskCompleted.setValue(new TaskCompleted(false, task.getException().getMessage()));
+                            else
+                                isTaskCompleted.setValue(new TaskCompleted(false, GENERAL_ERROR_MESSAGE));
+                            //Delete uploaded image
+                            ref.delete();
+                        }
+                    });
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    isTaskCompleted.setValue(new TaskCompleted(false, databaseError.getMessage()));
+                }
+            });
+
+        }
+
+        return isTaskCompleted;
+    }
+
+    public LiveData<List<AdminItemWithKey>> getAllItems() {
+        DatabaseReference itemRef = mRef.child("items");
+        MutableLiveData<List<AdminItemWithKey>> items = new MutableLiveData<>();
+
+        itemRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<AdminItemWithKey> list = new ArrayList<>();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    list.add(new AdminItemWithKey(snapshot.getValue(AdminItem.class), snapshot.getKey()));
+                }
+                items.setValue(list);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                items.setValue(null);
+            }
+        });
+
+        return items;
     }
 }
