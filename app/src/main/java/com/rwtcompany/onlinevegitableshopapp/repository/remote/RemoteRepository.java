@@ -44,6 +44,14 @@ public class RemoteRepository {
         mRef = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance().getReference();
+
+        //Update mAuth when state changes
+        new FirebaseAuth.AuthStateListener(){
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                mAuth=firebaseAuth;
+            }
+        };
     }
 
     public void placeOrder(List<CartItem> items, OrderDetails orderDetails) {
@@ -456,5 +464,68 @@ public class RemoteRepository {
         });
 
         return items;
+    }
+
+    ///////////////////////////////////////
+    //////////Authentication/////////////
+    //////////////////////////////////////
+    public LiveData<TaskCompleted> login(String email, String password) {
+        MutableLiveData<TaskCompleted> isLoggedIn = new MutableLiveData<>();
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+            if (task.isSuccessful())
+                isLoggedIn.setValue(new TaskCompleted(true, null));
+            else if(task.getException()!=null)
+                isLoggedIn.setValue(new TaskCompleted(false, task.getException().getMessage()));
+            else
+                isLoggedIn.setValue(new TaskCompleted(false,GENERAL_ERROR_MESSAGE));
+        });
+        return isLoggedIn;
+    }
+
+    public void logout(){
+        mAuth.signOut();
+    }
+
+    public LiveData<TaskCompleted> signUp(String email, String password) {
+        MutableLiveData<TaskCompleted> isSignedUp = new MutableLiveData<>();
+        mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(task -> {
+            if (task.isSuccessful())
+                isSignedUp.setValue(new TaskCompleted(true, null));
+            else if(task.getException()!=null)
+                isSignedUp.setValue(new TaskCompleted(false, task.getException().getMessage()));
+            else
+                isSignedUp.setValue(new TaskCompleted(false, GENERAL_ERROR_MESSAGE));
+        });
+
+        return isSignedUp;
+    }
+
+    public LiveData<TaskCompleted> saveNewUserData(){
+        MutableLiveData<TaskCompleted> isTaskCompleted = new MutableLiveData<>();
+        mRef.child("users").child(mAuth.getUid()).child("email").setValue(mAuth.getCurrentUser().getEmail()).addOnCompleteListener(task -> {
+            if (task.isSuccessful())
+                isTaskCompleted.setValue(new TaskCompleted(true, null));
+            else if(task.getException()!=null)
+                isTaskCompleted.setValue(new TaskCompleted(false, task.getException().getMessage()));
+            else
+                isTaskCompleted.setValue(new TaskCompleted(false, GENERAL_ERROR_MESSAGE));
+        });
+
+        return isTaskCompleted;
+    }
+
+    public LiveData<TaskCompleted> sendPasswordResetLink(String email){
+        MutableLiveData<TaskCompleted> isTaskCompleted = new MutableLiveData<>();
+
+        mAuth.sendPasswordResetEmail(email).addOnCompleteListener(task -> {
+            if (task.isSuccessful())
+                isTaskCompleted.setValue(new TaskCompleted(true, null));
+            else if(task.getException()!=null)
+                isTaskCompleted.setValue(new TaskCompleted(false, task.getException().getMessage()));
+            else
+                isTaskCompleted.setValue(new TaskCompleted(false, GENERAL_ERROR_MESSAGE));
+        });
+
+        return isTaskCompleted;
     }
 }

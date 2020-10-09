@@ -15,7 +15,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.rwtcompany.onlinevegitableshopapp.ui.admin.home.AdminHomeActivity;
-import com.rwtcompany.onlinevegitableshopapp.ui.login.MainActivity;
 import com.rwtcompany.onlinevegitableshopapp.ui.user.home.UserHomePageActivity;
 
 public class SplashScreen extends AppCompatActivity {

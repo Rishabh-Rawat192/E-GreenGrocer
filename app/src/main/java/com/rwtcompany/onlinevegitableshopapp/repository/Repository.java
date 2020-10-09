@@ -94,4 +94,27 @@ public class Repository {
         return remoteRepository.getAllItems();
     }
 
+    ///////////////////////////////////////
+    //////////Authentication/////////////
+    //////////////////////////////////////
+    public LiveData<TaskCompleted> login(String email, String password) {
+        return remoteRepository.login(email, password);
+    }
+
+    public void logout() {
+        remoteRepository.logout();
+    }
+
+    public LiveData<TaskCompleted> signUp(String email, String password) {
+        return remoteRepository.signUp(email, password);
+    }
+
+    public LiveData<TaskCompleted> saveNewUserData() {
+        return remoteRepository.saveNewUserData();
+    }
+
+    public LiveData<TaskCompleted> sendPasswordResetLink(String email) {
+        return remoteRepository.sendPasswordResetLink(email);
+    }
+
 }
