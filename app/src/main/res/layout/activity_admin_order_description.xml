@@ -39,8 +39,7 @@
             android:onClick="onOk"
             android:text="@android:string/ok"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="18sp" />
 
     </LinearLayout>
 
@@ -95,8 +94,7 @@
             android:onClick="onDelivered"
             android:text="@string/delivered"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="18sp" />
 
         <ImageButton
             android:id="@+id/imageButton"
@@ -119,8 +117,7 @@
             android:onClick="onCancel"
             android:text="@android:string/cancel"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="18sp" />
     </LinearLayout>
 
 

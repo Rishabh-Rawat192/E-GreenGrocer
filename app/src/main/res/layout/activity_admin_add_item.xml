@@ -54,6 +54,7 @@
         android:background="@color/colorPrimaryDark"
         android:onClick="submitDetail"
         android:text="@string/submit"
+        android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="18sp" />
 

@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:textColor="@android:color/holo_orange_dark"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 tools:text="Quantity:750 gram" />
 
@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:textColor="@android:color/holo_orange_dark"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 tools:text="Cost:Rs:10000" />
         </LinearLayout>

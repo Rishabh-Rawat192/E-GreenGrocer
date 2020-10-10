@@ -50,7 +50,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.HomePageVi
 
         holder.setItemCost(items.get(position).getCost());
         holder.setQuantity(items.get(position).getQuantity());
-        holder.setName(items.get(position).getName());
+        holder.setName(items.get(position).getName().substring(0, 1).toUpperCase() + items.get(position).getName().substring(1));
         Glide.with(context).load(items.get(position).getImageUrl()).into(holder.ivUserHomeImage);
 
         holder.btnAdd.setOnClickListener(v ->listener.increaseItemQuantity(position));

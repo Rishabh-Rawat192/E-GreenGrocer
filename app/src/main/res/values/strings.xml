@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">E-GreenGrocer</string>
 
-    <string name="signUp_new_users">signUp(new users)</string>
-    <string name="login_old_users">login(old users)</string>
     <string name="enter_pin_only_for_admin">Enter Pin(Only for admin)</string>
     <string name="enter_your_password">Enter Password</string>
     <string name="enter_your_email_please">Enter Email</string>
@@ -11,10 +9,10 @@
     <string name="enter_item_name">Enter item name</string>
     <string name="enter_item_price">Enter item price</string>
     <string name="submit">Submit</string>
-    <string name="submit_change">Submit change</string>
+    <string name="submit_change">Submit Change</string>
     <string name="enter_estimated_delivery_data_and_time">enter estimated delivery data and time</string>
     <string name="delivered">delivered</string>
-    <string name="go_to_cart">go to cart</string>
+    <string name="go_to_cart">Go to cart</string>
     <string name="order">order</string>
     <string name="enter_old_pin">enter old pin</string>
     <string name="enter_new_pin">enter new pin</string>
@@ -24,8 +22,7 @@
     <string name="add_new">add new</string>
     <string name="rs">₹</string>
     <string name="_0">0</string>
-    <string name="remove">-</string>
-    <string name="add">+</string>
+    <string name="add">add</string>
     <string name="house_number">house number</string>
     <string name="colony_street">colony/street</string>
     <string name="locality">locality</string>
@@ -55,4 +52,12 @@
     </string-array>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="delivery_charge">Delivery Charge :</string>
+    <string name="items_cost">Items Cost :</string>
+    <string name="change">change</string>
+    <string name="forgot_password2">Forgot password</string>
+    <string name="send_reset_link">Send Reset Link</string>
+    <string name="login">Login</string>
+    <string name="create_new_account">Create New Account</string>
+    <string name="sign_up">Sign Up</string>
 </resources>

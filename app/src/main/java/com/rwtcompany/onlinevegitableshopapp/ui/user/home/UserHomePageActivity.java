@@ -89,7 +89,7 @@ public class UserHomePageActivity extends AppCompatActivity {
                 dialog.dismiss();
                 holder.setPrice(getResources().getString(R.string.rs) + model.getPrice() + "/" + model.getUnit());
 
-                holder.setName(model.getName());
+                holder.setName(model.getName().substring(0,1).toUpperCase()+model.getName().substring(1));
                 Glide.with(UserHomePageActivity.this).load(model.getImageUrl()).into(holder.ivUserHomeImage);
                 
 //              Update button

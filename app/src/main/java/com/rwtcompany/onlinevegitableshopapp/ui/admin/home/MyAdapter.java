@@ -35,7 +35,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.AdminPageViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull AdminPageViewHolder holder, int position) {
-        holder.setName(items.get(position).getAdminItem().getName());
+        holder.setName(items.get(position).getAdminItem().getName().substring(0, 1).toUpperCase() + items.get(position).getAdminItem().getName().substring(1));
         if(items.get(position).getAdminItem().getUnit().equals("out of stock"))
             holder.setPrice("Not available");
         else

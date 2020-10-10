@@ -53,6 +53,7 @@
         android:background="@color/colorPrimaryDark"
         android:onClick="submitChange"
         android:text="@string/submit_change"
+        android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="18sp" />
 

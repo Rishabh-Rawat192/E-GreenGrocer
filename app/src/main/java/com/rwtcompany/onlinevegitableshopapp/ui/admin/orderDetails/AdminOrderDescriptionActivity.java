@@ -103,7 +103,7 @@ public class AdminOrderDescriptionActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull UserOrderDescriptionActivity.MyViewHolder holder, int position, @NonNull CartItem model) {
                 dialog.dismiss();
                 Glide.with(AdminOrderDescriptionActivity.this).load(model.getImageUrl()).into(holder.ivOrderedItem);
-                holder.setName(model.getName());
+                holder.setName(model.getName().substring(0,1).toUpperCase()+model.getName().substring(1));
                 holder.setPrice(model.getPrice()+"/"+model.getUnit());
                 holder.setCost(model.getCost());
 
