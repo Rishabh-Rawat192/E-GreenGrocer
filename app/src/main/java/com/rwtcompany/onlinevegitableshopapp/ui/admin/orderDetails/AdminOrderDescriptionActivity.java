@@ -39,37 +39,37 @@ public class AdminOrderDescriptionActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Intent intent=getIntent();
-        String orderId=intent.getStringExtra("orderId");
-        String uuid=intent.getStringExtra("uuid");
+        Intent intent = getIntent();
+        String orderId = intent.getStringExtra("orderId");
+        String uuid = intent.getStringExtra("uuid");
 
         viewModel = new ViewModelProvider(this, new MyViewModelFactory(orderId, uuid)).get(AdminOrdersDescriptionViewModel.class);
-        viewModel.orderDetails.observe(this,orderDetails -> {
-            if(orderDetails!=null){
-                String address="Name:"+orderDetails.getName()
-                        + "\nAddress:"+orderDetails.getAddress()
-                        +"\nNumber:"+orderDetails.getNumber();
+        viewModel.orderDetails.observe(this, orderDetails -> {
+            if (orderDetails != null) {
+                String address = "Name:" + orderDetails.getName()
+                        + "\nAddress:" + orderDetails.getAddress()
+                        + "\nNumber:" + orderDetails.getNumber();
 
-                String cost="Rs:"+orderDetails.getTotal();
-                String deliveryCharge=orderDetails.getDeliveryCharge();
-                if(!deliveryCharge.equals("0"))
-                    cost+="\n+"+deliveryCharge;
+                String cost = "Rs:" + orderDetails.getTotal();
+                String deliveryCharge = orderDetails.getDeliveryCharge();
+                if (!deliveryCharge.equals("0"))
+                    cost += "\n+" + deliveryCharge;
 
-                String orderStatus=orderDetails.getOrderStatus();
+                String orderStatus = orderDetails.getOrderStatus();
                 if (!orderStatus.equals("pending...")) {
                     binding.etEstimateDeliveryTime.setText(orderStatus);
                 }
-                String requestedDeliveryTime="Time Requested: "+orderDetails.getRequestTime();
+                String requestedDeliveryTime = "Time Requested: " + orderDetails.getRequestTime();
 
                 binding.tvRequestedDeliveryTime.setText(requestedDeliveryTime);
                 binding.tvAdminOrderAddress.setText(address);
                 binding.tvAdminTotalOrderCost.setText(cost);
-            }else {
-                Toast.makeText(AdminOrderDescriptionActivity.this,"Something went wrong...",Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(AdminOrderDescriptionActivity.this, "Something went wrong...", Toast.LENGTH_LONG).show();
             }
         });
 
-        itemsReference=FirebaseDatabase.getInstance().getReference().child("orders").child(uuid).child(orderId).child("items");
+        itemsReference = FirebaseDatabase.getInstance().getReference().child("orders").child(uuid).child(orderId).child("items");
 
         binding.userOrderDescriptionRecyclerView.setHasFixedSize(true);
 
@@ -84,7 +84,7 @@ public class AdminOrderDescriptionActivity extends AppCompatActivity {
         setUpRecyclerView();
     }
 
-    private void setUpRecyclerView(){
+    private void setUpRecyclerView() {
         dialog.show();
         FirebaseRecyclerOptions<CartItem> options =
                 new FirebaseRecyclerOptions.Builder<CartItem>()
@@ -103,15 +103,16 @@ public class AdminOrderDescriptionActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull UserOrderDescriptionActivity.MyViewHolder holder, int position, @NonNull CartItem model) {
                 dialog.dismiss();
                 Glide.with(AdminOrderDescriptionActivity.this).load(model.getImageUrl()).into(holder.ivOrderedItem);
-                holder.setName(model.getName().substring(0,1).toUpperCase()+model.getName().substring(1));
-                holder.setPrice(model.getPrice()+"/"+model.getUnit());
+                if (model.getName() != null)
+                    holder.setName(model.getName().substring(0, 1).toUpperCase() + model.getName().substring(1));
+                holder.setPrice(model.getPrice() + "/" + model.getUnit());
                 holder.setCost(model.getCost());
 
-                String quantity=model.getQuantity();
+                String quantity = model.getQuantity();
                 if (model.getUnit().contains("gram")) {
-                    quantity+="gram";
+                    quantity += "gram";
                 } else if (model.getUnit().contains("kg")) {
-                    quantity+="kg";
+                    quantity += "kg";
                 } else if (model.getUnit().contains("piece")) {
                     quantity += "piece";
                 }
@@ -136,23 +137,22 @@ public class AdminOrderDescriptionActivity extends AppCompatActivity {
     }
 
     public void onOk(View view) {
-        String data=binding.etEstimateDeliveryTime.getText().toString().trim();
-        if(data.isEmpty())
-        {
-            Toast.makeText(AdminOrderDescriptionActivity.this,"enter delivery date and time please...",Toast.LENGTH_LONG).show();
-        }
-        else {
+        String data = binding.etEstimateDeliveryTime.getText().toString().trim();
+        if (data.isEmpty()) {
+            Toast.makeText(AdminOrderDescriptionActivity.this, "enter delivery date and time please...", Toast.LENGTH_LONG).show();
+        } else {
             dialog.show();
             viewModel.updateOrderStatus(data);
-            Toast.makeText(AdminOrderDescriptionActivity.this,"Date and time set as entered....",Toast.LENGTH_LONG).show();
+            Toast.makeText(AdminOrderDescriptionActivity.this, "Date and time set as entered....", Toast.LENGTH_LONG).show();
             dialog.dismiss();
             finish();
         }
     }
 
     public void callUser(View view) {
-        startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+viewModel.orderDetails.getValue().getNumber())));
+        startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + viewModel.orderDetails.getValue().getNumber())));
     }
+
     @Override
     public boolean onSupportNavigateUp() {
         finish();

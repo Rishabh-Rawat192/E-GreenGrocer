@@ -50,7 +50,7 @@
         <item>1 piece</item>
         <item>6 piece</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="delivery_charge">Delivery Charge :</string>
     <string name="items_cost">Items Cost :</string>

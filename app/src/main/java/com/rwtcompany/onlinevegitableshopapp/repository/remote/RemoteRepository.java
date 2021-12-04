@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -498,6 +499,20 @@ public class RemoteRepository {
         });
 
         return isSignedUp;
+    }
+
+    public LiveData<TaskCompleted> signInWithCredential(AuthCredential credential){
+        MutableLiveData<TaskCompleted> isSignIn=new MutableLiveData<>();
+        mAuth.signInWithCredential(credential).addOnCompleteListener(task -> {
+            if (task.isSuccessful())
+                isSignIn.setValue(new TaskCompleted(true, null));
+            else if(task.getException()!=null)
+                isSignIn.setValue(new TaskCompleted(false, task.getException().getMessage()));
+            else
+                isSignIn.setValue(new TaskCompleted(false, GENERAL_ERROR_MESSAGE));
+        });
+
+        return isSignIn;
     }
 
     public LiveData<TaskCompleted> saveNewUserData(){

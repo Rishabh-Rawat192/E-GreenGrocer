@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import androidx.lifecycle.LiveData;
 
+import com.google.firebase.auth.AuthCredential;
 import com.rwtcompany.onlinevegitableshopapp.model.AdminItem;
 import com.rwtcompany.onlinevegitableshopapp.model.AdminItemWithKey;
 import com.rwtcompany.onlinevegitableshopapp.model.AdminMetaData;
@@ -107,6 +108,10 @@ public class Repository {
 
     public LiveData<TaskCompleted> signUp(String email, String password) {
         return remoteRepository.signUp(email, password);
+    }
+
+    public LiveData<TaskCompleted> signInWithCredential(AuthCredential credential){
+        return remoteRepository.signInWithCredential(credential);
     }
 
     public LiveData<TaskCompleted> saveNewUserData() {

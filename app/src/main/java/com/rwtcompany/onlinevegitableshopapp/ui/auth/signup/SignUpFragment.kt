@@ -9,8 +9,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.tasks.Task
-import com.google.firebase.iid.FirebaseInstanceId
-import com.google.firebase.iid.InstanceIdResult
 import com.rwtcompany.onlinevegitableshopapp.R
 import com.rwtcompany.onlinevegitableshopapp.databinding.SignUpFragmentBinding
 import com.rwtcompany.onlinevegitableshopapp.ui.admin.home.AdminHomeActivity
@@ -82,7 +80,7 @@ class SignUpFragment : Fragment() {
                         }
                         //Pin matches
                         adminMetaData.pin == pin -> {
-                            updateAdminMetaData(email)
+//                            updateAdminMetaData(email)
                         }
                         else -> {
                             dialog.dismiss()
@@ -98,24 +96,24 @@ class SignUpFragment : Fragment() {
         }
     }
 
-    private fun updateAdminMetaData(email: String) {
-        //Get token for notification and go to next activity
-        FirebaseInstanceId.getInstance().instanceId
-                .addOnCompleteListener { task: Task<InstanceIdResult> ->
-                    dialog.dismiss()
-                    var token: String? = null
-                    if (!task.isSuccessful) {
-                        Log.i("Main", task.exception.toString())
-                        Toast.makeText(activity, "Notification service is not activated. Please logout and then login again later.", Toast.LENGTH_LONG).show()
-                    } else {
-                        token = task.result?.token
-                    }
-                    viewModel.updateAdminMetaData(email, token)
-                    Toast.makeText(context, "Created account successfully...", Toast.LENGTH_LONG).show()
-                    startActivity(Intent(activity, AdminHomeActivity::class.java))
-                    activity?.finish()
-                }
-    }
+//    private fun updateAdminMetaData(email: String) {
+//        //Get token for notification and go to next activity
+//        FirebaseInstanceId.getInstance().instanceId
+//                .addOnCompleteListener { task: Task<InstanceIdResult> ->
+//                    dialog.dismiss()
+//                    var token: String? = null
+//                    if (!task.isSuccessful) {
+//                        Log.i("Main", task.exception.toString())
+//                        Toast.makeText(activity, "Notification service is not activated. Please logout and then login again later.", Toast.LENGTH_LONG).show()
+//                    } else {
+//                        token = task.result?.token
+//                    }
+//                    viewModel.updateAdminMetaData(email, token)
+//                    Toast.makeText(context, "Created account successfully...", Toast.LENGTH_LONG).show()
+//                    startActivity(Intent(activity, AdminHomeActivity::class.java))
+//                    activity?.finish()
+//                }
+//    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.auth_menu, menu)

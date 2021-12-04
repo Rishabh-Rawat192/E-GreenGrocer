@@ -44,13 +44,13 @@ public class UserOrderDescriptionActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Intent intent=getIntent();
+        Intent intent = getIntent();
         String orderId = intent.getStringExtra("orderId");
 
         viewModel = new ViewModelProvider(this, new MyViewModelFactory(orderId)).get(UserOrderDescriptionViewModel.class);
         viewModel.orderDetails.observe(this, this::setUpOrderDetails);
 
-        dialog=new ProgressDialog(this);
+        dialog = new ProgressDialog(this);
         dialog.setMessage("Canceling....");
         dialog.setCancelable(false);
 
@@ -65,24 +65,24 @@ public class UserOrderDescriptionActivity extends AppCompatActivity {
         setUpRecyclerView();
     }
 
-    private void setUpOrderDetails(OrderDetails orderDetails){
-        String address="Name : "+orderDetails.getName()+"\nAddress : "+orderDetails.getAddress()+"\n"+"Phone : "+orderDetails.getNumber();
+    private void setUpOrderDetails(OrderDetails orderDetails) {
+        String address = "Name : " + orderDetails.getName() + "\nAddress : " + orderDetails.getAddress() + "\n" + "Phone : " + orderDetails.getNumber();
         binding.tvOrderAddress.setText(address);
-        String total="Total : "+getResources().getString(R.string.rs)+orderDetails.getTotal();
-        total+="\nDelivery Charge : "+getResources().getString(R.string.rs)+orderDetails.getDeliveryCharge();
+        String total = "Total : " + getResources().getString(R.string.rs) + orderDetails.getTotal();
+        total += "\nDelivery Charge : " + getResources().getString(R.string.rs) + orderDetails.getDeliveryCharge();
         binding.tvTotalOrderCost.setText(total);
         String orderStatus = "Delivery : " + orderDetails.getOrderStatus();
         binding.tvOrderStatus.setText(orderStatus);
     }
 
-    private void setUpRecyclerView(){
+    private void setUpRecyclerView() {
         dialog.show();
         FirebaseRecyclerOptions<CartItem> options =
                 new FirebaseRecyclerOptions.Builder<CartItem>()
                         .setQuery(orderedItemsReference, CartItem.class)
                         .setLifecycleOwner(this)
                         .build();
-        FirebaseRecyclerAdapter<CartItem,MyViewHolder> adapter = new FirebaseRecyclerAdapter<CartItem, MyViewHolder>(options) {
+        FirebaseRecyclerAdapter<CartItem, MyViewHolder> adapter = new FirebaseRecyclerAdapter<CartItem, MyViewHolder>(options) {
             @NonNull
             @Override
             public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -94,15 +94,16 @@ public class UserOrderDescriptionActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull MyViewHolder holder, int position, @NonNull CartItem model) {
                 dialog.dismiss();
                 Glide.with(UserOrderDescriptionActivity.this).load(model.getImageUrl()).into(holder.ivOrderedItem);
-                holder.setName(model.getName().substring(0,1).toUpperCase()+model.getName().substring(1));
-                holder.setPrice(model.getPrice()+"/"+model.getUnit());
+                if (model.getName() != null)
+                    holder.setName(model.getName().substring(0, 1).toUpperCase() + model.getName().substring(1));
+                holder.setPrice(model.getPrice() + "/" + model.getUnit());
                 holder.setCost(model.getCost());
 
-                String quantity=model.getQuantity();
+                String quantity = model.getQuantity();
                 if (model.getUnit().contains("gram")) {
-                    quantity+="gram";
+                    quantity += "gram";
                 } else if (model.getUnit().contains("kg")) {
-                    quantity+="kg";
+                    quantity += "kg";
                 } else if (model.getUnit().contains("piece")) {
                     quantity += "piece";
                 }
@@ -113,37 +114,37 @@ public class UserOrderDescriptionActivity extends AppCompatActivity {
         binding.userOrderDescriptionRecyclerView.setAdapter(adapter);
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder
-    {
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
         View mView;
         public ImageView ivOrderedItem;
-        TextView tvOrderedItemName,tvOrderedItemPrice,tvOrderedItemQuantity,tvOrderedItemCost;
+        TextView tvOrderedItemName, tvOrderedItemPrice, tvOrderedItemQuantity, tvOrderedItemCost;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            mView=itemView;
+            mView = itemView;
             ivOrderedItem = mView.findViewById(R.id.ivOrderedItem);
             tvOrderedItemName = mView.findViewById(R.id.tvOrederedItemName);
             tvOrderedItemPrice = mView.findViewById(R.id.tvOrderedItemPrice);
             tvOrderedItemQuantity = mView.findViewById(R.id.tvOrderedItemQuantity);
             tvOrderedItemCost = mView.findViewById(R.id.tvOrderedItemCost);
         }
-        public void setName(String name)
-        {
+
+        public void setName(String name) {
             tvOrderedItemName.setText(name);
         }
-        public void setPrice(String price)
-        {
-            String p=mView.getResources().getString(R.string.rs)+price;
+
+        public void setPrice(String price) {
+            String p = mView.getResources().getString(R.string.rs) + price;
             tvOrderedItemPrice.setText(p);
         }
-        public void setQuantity(String quantity)
-        {
-            String s="Quantity : "+quantity;
+
+        public void setQuantity(String quantity) {
+            String s = "Quantity : " + quantity;
             tvOrderedItemQuantity.setText(s);
         }
-        public void setCost(String cost)
-        {
-            String c="Cost : "+mView.getResources().getString(R.string.rs)+cost;
+
+        public void setCost(String cost) {
+            String c = "Cost : " + mView.getResources().getString(R.string.rs) + cost;
             tvOrderedItemCost.setText(c);
         }
     }
