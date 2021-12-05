@@ -15,6 +15,7 @@ import androidx.navigation.Navigation
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -23,6 +24,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.rwtcompany.onlinevegitableshopapp.R
 import com.rwtcompany.onlinevegitableshopapp.databinding.FragmentHomeBinding
+import com.rwtcompany.onlinevegitableshopapp.ui.user.address.UserAddressActivity
 import com.rwtcompany.onlinevegitableshopapp.ui.user.home.UserHomePageActivity
 
 
@@ -52,6 +54,11 @@ class HomeFragment : Fragment() {
             .build()
 
         googleSignInClient = GoogleSignIn.getClient(activity, gso)
+
+        //Remove already sign in account so that
+        //dialog will again pop up and ask user
+        // to choose a new google account
+        googleSignInClient.signOut()
 
         binding.signInButton.setOnClickListener {
             signIn()
